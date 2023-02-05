@@ -1,0 +1,1498 @@
+// import 'dart:convert';
+// import 'dart:async';
+// import 'dart:convert';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:http/http.dart' as http;
+import 'package:percent_indicator/percent_indicator.dart';
+
+Widget matchesInfo(BuildContext context, {Map data}) {
+  double teamNameSize = 20;
+  // Dio dio = Dio();
+
+  // void getHttp() async {
+  //   try {
+  //     var response = await Dio().get(
+  //         'https://livescore-api.com/api-client/matches/stats.json?match_id=277078&key=s0RJSKFct9lSn6Aq&secret=O8hYguEOUpN7xfb0f3J8OpkhzG9WMKnB');
+  //     List t = [response.data];
+  //     print(t[0][5]);
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
+  // test() {
+  //   print("object");
+  // }
+
+  // getHttp();
+  // test();
+
+  String shotsOnTarget,
+      yellowCards,
+      redCards,
+      possesion,
+      attacks,
+      corners,
+      attempts_on_goal;
+  String url = 'livescore-api.com';
+  String url2 =
+      '/api-client/matches/stats.json?match_id=${data["id"]}&key=s0RJSKFct9lSn6Aq&secret=O8hYguEOUpN7xfb0f3J8OpkhzG9WMKnB';
+  double padd = 5;
+  Future getUserData() async {
+    var response = await http.get(Uri.http(url, url2));
+    var jsonData = jsonDecode(response.body);
+    // List<User> users = [];
+    // for (var data in jsonData) {
+    //   User user = User(data['yellow_cards']);
+    //   users.add(user);
+    //   print(users.length);
+    //   return users;
+    // }
+    // Data = jsonData;
+    shotsOnTarget = jsonData['data']['shots_on_target'];
+    yellowCards = jsonData['data']['yellow_cards'];
+    redCards = jsonData['data']['red_cards'];
+    possesion = jsonData['data']['possesion'];
+    attacks = jsonData['data']['attacks'];
+    corners = jsonData['data']['corners'];
+    attempts_on_goal = jsonData['data']['attempts_on_goal'];
+    // print(jsonData['data']['yellow_cards'].toString().substring(0, 1));
+  }
+
+  getUserData();
+  // print(url);
+  // print(url2);
+  return MaterialApp(
+    home: Scaffold(
+      appBar: PreferredSize(
+        child: AppBar(
+          elevation: 0,
+          backgroundColor: Color(0xFF171829),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: Icon(
+              FontAwesome.chevron_left,
+              size: 17,
+            ),
+          ),
+          centerTitle: true,
+          title: Text(
+            data["league"],
+          ),
+          // shape: RoundedRectangleBorder(
+          //   borderRadius: BorderRadius.only(
+          //     bottomLeft: Radius.circular(30),
+          //     bottomRight: Radius.circular(30),
+          //   ),
+          // ),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(130),
+            child: Container(
+              padding: EdgeInsets.all(8),
+              child: Container(
+                padding: EdgeInsets.only(bottom: 20),
+                // padding: EdgeInsets.all(20),
+
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * .35,
+                          child: Text(
+                            data["homeTeam"],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: teamNameSize,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
+                              child: Text(
+                                data["score"],
+                                style: TextStyle(
+                                  fontSize: 27,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              data["date"],
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 80,
+                            ),
+                          ],
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * .35,
+                          child: Text(
+                            // TextAlign.center,
+                            data["awayTeam"],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: teamNameSize,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        preferredSize:
+            Size.fromHeight(MediaQuery.of(context).size.height * .25),
+      ),
+      body:
+          // Padding(
+          //   padding: const EdgeInsets.all(20.0),
+          //   child: Container(
+          //     alignment: Alignment.center,
+          //     width: MediaQuery.of(context).size.width * .90,
+          //     height: 200,
+          //     child: Text("data"),
+          //     decoration: BoxDecoration(
+          //       color: Colors.grey,
+          //       borderRadius: BorderRadius.all(
+          //         Radius.circular(20),
+          //       ),
+          //     ),
+          //   ),
+          // )
+          Container(
+        color: Color(0xFF171829),
+        child: FutureBuilder(
+          future: getUserData(),
+          builder: (context, snapshot) {
+            if (snapshot == null || shotsOnTarget == null) {
+              return Container(
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: Color(0xFF2b2b3d),
+                  ),
+                ),
+              );
+            } else {
+              return Container(
+                child: ListView(
+                  children: [
+                    Container(
+                      // alignment: Alignment.center,
+                      padding: EdgeInsets.all(30),
+                      child: Text(
+                        "Match Details",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: Column(
+                        children: [
+                          Shooting(context, shotsOnTarget),
+                          Attacks(context, attacks),
+                          Possesion(context, possesion),
+                          yellowCard(context, yellowCards),
+                          redCard(context, redCards),
+                          Corner(context, corners),
+                          info(context, data: data),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 14),
+                          child: Text(
+                            "Ball possesion",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            LinearPercentIndicator(
+                              isRTL: true,
+                              width: MediaQuery.of(context).size.width * .43,
+                              lineHeight: 14.0,
+                              percent: 48 / 100,
+                              backgroundColor: Colors.grey,
+                              progressColor: Colors.blue,
+                              linearStrokeCap: LinearStrokeCap.butt,
+                              leading: Text(
+                                "${possesion.toString().substring(0, 2)} %",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            LinearPercentIndicator(
+                              width: MediaQuery.of(context).size.width * .43,
+                              lineHeight: 14.0,
+                              percent:
+                                  double.parse(possesion.substring(0, 2)) / 100,
+                              backgroundColor: Colors.grey,
+                              progressColor: Colors.blue,
+                              linearStrokeCap: LinearStrokeCap.butt,
+                              trailing: Text(
+                                "48 %",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [goal(context, attempts_on_goal)],
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              );
+            }
+          },
+        ),
+      ),
+    ),
+    debugShowCheckedModeBanner: false,
+  );
+}
+
+// class Event {
+//   final String Mainevent, player, time, homeOrAway;
+//   Event(this.Mainevent, this.player, this.time, this.homeOrAway);
+// }
+
+// class User {
+//   final String card;
+//   User(this.card);
+// }
+
+Widget Shooting(BuildContext context, String shotsOnTarget) {
+  return Padding(
+    padding: EdgeInsets.all(5),
+    child: Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Text(
+          shotsOnTarget.toString().substring(0, 1),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          "Shooting",
+          style: TextStyle(
+            fontSize: 19,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          shotsOnTarget.toString().substring(2),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget goal(BuildContext context, String attempts_on_goal) {
+  String goal = "0", away;
+  print(attempts_on_goal);
+  // print(goal);
+  for (var i = 0; i < attempts_on_goal.length; i++) {
+    if (attempts_on_goal[i] != ":") {
+      goal += attempts_on_goal[i];
+    } else {
+      break;
+    }
+  }
+  return Container(
+    child: Row(
+      children: [
+        Text(
+          goal.toString().substring(1),
+          style: TextStyle(color: Colors.white),
+        ),
+        Text(
+          attempts_on_goal.toString().substring(goal.length),
+          style: TextStyle(color: Colors.white),
+        )
+      ],
+    ),
+  );
+}
+
+Widget Attacks(BuildContext context, String attacks) {
+  String home = "0", away;
+  for (var i = 0; i < attacks.length; i++) {
+    if (attacks[i] != ":") {
+      home += attacks[i];
+    } else {
+      break;
+    }
+  }
+  // print(attacks.substring(home.length));
+  return Padding(
+    padding: const EdgeInsets.all(5),
+    child: Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Text(
+          home.toString().substring(1),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          "Attacks",
+          style: TextStyle(
+            fontSize: 19,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          attacks.toString().substring(home.length),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget Possesion(BuildContext context, String possesion) {
+  return Padding(
+    padding: const EdgeInsets.all(5),
+    child: Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Text(
+          possesion.toString().substring(0, 2),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          "possesion",
+          style: TextStyle(
+            fontSize: 19,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          possesion.toString().substring(3),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget yellowCard(BuildContext context, String yellowCards) {
+  return Padding(
+    padding: const EdgeInsets.all(5),
+    child: Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Text(
+          yellowCards.toString().substring(0, 1),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+        Row(
+          children: [
+            RotatedBox(
+              quarterTurns: 1,
+              child: Icon(
+                MaterialCommunityIcons.rectangle,
+                color: Colors.yellow,
+                size: 30,
+              ),
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Text(
+              "Card",
+              style: TextStyle(
+                fontSize: 19,
+                color: Colors.white,
+              ),
+            )
+          ],
+        ),
+        Text(
+          yellowCards.toString().substring(2),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget redCard(BuildContext context, String redCards) {
+  return Padding(
+    padding: const EdgeInsets.all(5),
+    child: Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Text(
+          redCards.toString().substring(0, 1),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+        Row(
+          children: [
+            RotatedBox(
+              quarterTurns: 1,
+              child: Icon(
+                MaterialCommunityIcons.rectangle,
+                color: Colors.red,
+                size: 30,
+              ),
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Text(
+              "Card",
+              style: TextStyle(
+                fontSize: 19,
+                color: Colors.white,
+              ),
+            )
+          ],
+        ),
+        Text(
+          redCards.toString().substring(2),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget Corner(BuildContext context, String corners) {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(7, 5, 5, 5),
+    child: Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Text(
+          corners.toString().substring(0, 1),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          "corners",
+          style: TextStyle(
+            fontSize: 19,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          corners.toString().substring(2),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget info(BuildContext context, {Map data}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 40),
+    child: Container(
+      width: MediaQuery.of(context).size.width * .90,
+      decoration: BoxDecoration(
+        color: Color(0xFF2b2b3d),
+        borderRadius: BorderRadius.all(
+          Radius.circular(20),
+        ),
+      ),
+      child: Container(
+        padding: EdgeInsets.all(14),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //date
+            Padding(
+                padding: const EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    Icon(
+                      FontAwesome.clock_o,
+                      size: 17,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 7,
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          data["date"],
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          data["time"],
+                          style: TextStyle(color: Colors.white),
+                        )
+                      ],
+                    ),
+                  ],
+                )),
+            //league
+            Padding(
+                padding: const EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    Icon(
+                      FontAwesome.futbol_o,
+                      size: 15,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      data["league"],
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                )),
+
+            //location
+            Padding(
+                padding: const EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    Icon(
+                      MaterialCommunityIcons.soccer_field,
+                      size: 17,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      data["location"],
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                )),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+
+
+
+
+
+
+
+
+
+// import 'dart:convert';
+// import 'dart:async';
+// import 'dart:convert';
+import 'dart:convert';
+// import 'dart:html';
+// import 'dart:html';
+
+import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:http/http.dart' as http;
+
+Widget matchesInfo(BuildContext context, {Map data}) {
+  double teamNameSize = 20;
+  // Dio dio = Dio();
+
+  // void getHttp() async {
+  //   try {
+  //     var response = await Dio().get(
+  //         'https://livescore-api.com/api-client/matches/stats.json?match_id=277078&key=s0RJSKFct9lSn6Aq&secret=O8hYguEOUpN7xfb0f3J8OpkhzG9WMKnB');
+  //     List t = [response.data];
+  //     print(t[0][5]);
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
+  // test() {
+  //   print("object");
+  // }
+
+  // getHttp();
+  // test();
+  print(data["id"]);
+  String shotsOnTarget, yellowCards, redCards, possesion, attacks, corners;
+  String ht_score, ft_score, home_id, away_id, location;
+  String url = 'livescore-api.com';
+  String url2 =
+      '/api-client/scores/events.json?secret=O8hYguEOUpN7xfb0f3J8OpkhzG9WMKnB&key=s0RJSKFct9lSn6Aq&id=${data["id"]}';
+  double padd = 5;
+  Future getUserData() async {
+    var response = await http.get(Uri.http(url, url2));
+    var jsonData = jsonDecode(response.body);
+    List<User> users = [];
+    // for (var data in jsonData) {
+    //   User user = User(data['data']['event']['player']);
+    //   users.add(user);
+    // }
+    ht_score = jsonData['data']['match']['ht_score'];
+    ft_score = jsonData['data']['match']['ft_score'];
+    home_id = jsonData['data']['match']['home_id'];
+    away_id = jsonData['data']['match']['away_id'];
+    location = jsonData['data']['match']['location'];
+
+    for (var i = 0; i < jsonData['data']['event'].length; i++) {
+      // print(jsonData['data']['event'][i]['player']);
+      //player, time, event, home_away, info
+      User user = User(
+          jsonData['data']['event'][i]['player'],
+          jsonData['data']['event'][i]['time'],
+          jsonData['data']['event'][i]['event'],
+          jsonData['data']['event'][i]['home_away'],
+          jsonData['data']['event'][i]['info']);
+      users.add(user);
+    }
+    print(users.length);
+    return users;
+    // print(jsonData['data']['event'].length);
+  }
+
+  getUserData();
+  // print(url);
+  // print(url2);
+  return MaterialApp(
+    home: Scaffold(
+        appBar: PreferredSize(
+          child: AppBar(
+            elevation: 0,
+            backgroundColor: Color(0xFF171829),
+            leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: Icon(
+                FontAwesome.chevron_left,
+                size: 17,
+              ),
+            ),
+            centerTitle: true,
+            title: Text(
+              data["league"],
+            ),
+            // shape: RoundedRectangleBorder(
+            //   borderRadius: BorderRadius.only(
+            //     bottomLeft: Radius.circular(30),
+            //     bottomRight: Radius.circular(30),
+            //   ),
+            // ),
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(130),
+              child: Container(
+                padding: EdgeInsets.all(8),
+                child: Container(
+                  padding: EdgeInsets.only(bottom: 20),
+                  // padding: EdgeInsets.all(20),
+
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * .35,
+                            child: Text(
+                              data["homeTeam"],
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: teamNameSize,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          Column(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
+                                child: Text(
+                                  data["score"],
+                                  style: TextStyle(
+                                    fontSize: 27,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                data["date"],
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 80,
+                              ),
+                            ],
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width * .35,
+                            child: Text(
+                              // TextAlign.center,
+                              data["awayTeam"],
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: teamNameSize,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          preferredSize:
+              Size.fromHeight(MediaQuery.of(context).size.height * .25),
+        ),
+        body: Container(
+          color: Color(0xFF171829),
+          child: FutureBuilder(
+            future: getUserData(),
+            builder: (context, snapshot) {
+              if (snapshot.data == null) {
+                return Container(
+                  child: Text("loading"),
+                );
+              } else {
+                return ListView(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 15),
+                      child: Text(
+                        "Match Details",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFF2b2b3d),
+
+                          borderRadius: BorderRadius.all(Radius.circular(6)),
+                          //color: Colors.white,
+                          // boxShadow: [
+                          //   BoxShadow(
+                          //     blurRadius: 25,
+                          //     color: Colors.grey,
+                          //     offset: const Offset(0, 1),
+                          //   )
+                          // ],
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        height: MediaQuery.of(context).size.height *
+                            ((snapshot.data.length / 100) * 4),
+                        child: ListView.builder(
+                          // scrollDirection: Axis.vertical,
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context, i) {
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(4, 10, 4, 10),
+                              child: Container(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    if (snapshot.data[i].home_away == "h")
+                                      homeTeam(context, snapshot, i)
+                                    else
+                                      awayTeam(context, snapshot, i)
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    Text(
+                      "data",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    )
+                  ],
+                );
+              }
+            },
+          ),
+        )
+
+        // Padding(
+        //   padding: const EdgeInsets.all(20.0),
+        //   child: Container(
+        //     alignment: Alignment.center,
+        //     width: MediaQuery.of(context).size.width * .90,
+        //     height: 200,
+        //     child: Text("data"),
+        //     decoration: BoxDecoration(
+        //       color: Colors.grey,
+        //       borderRadius: BorderRadius.all(
+        //         Radius.circular(20),
+        //       ),
+        //     ),
+        //   ),
+        // ),
+
+        //     Container(
+        //   color: Color(0xFF171829),
+        //   child: FutureBuilder(
+        //     future: getUserData(),
+        //     builder: (context, snapshot) {
+        //       if (snapshot == null || shotsOnTarget == null) {
+        //         return Container(
+        //           child: Center(
+        //             child: CircularProgressIndicator(
+        //               color: Color(0xFF2b2b3d),
+        //             ),
+        //           ),
+        //         );
+        //       } else {
+        //         return Container(
+        //           child: ListView(
+        //             children: [
+        //               Container(
+        //                 // alignment: Alignment.center,
+        //                 padding: EdgeInsets.all(30),
+        //                 child: Text(
+        //                   "Match Details",
+        //                   textAlign: TextAlign.center,
+        //                   style: TextStyle(
+        //                     color: Colors.white,
+        //                     fontSize: 20,
+        //                     fontWeight: FontWeight.w600,
+        //                   ),
+        //                 ),
+        //               ),
+        //               Container(
+        //                 child: Column(
+        //                   children: [
+        //                     Shooting(context, shotsOnTarget),
+        //                     Attacks(context, attacks),
+        //                     Possesion(context, possesion),
+        //                     yellowCard(context, yellowCards),
+        //                     redCard(context, redCards),
+        //                     Corner(context, corners),
+        //                     info(context, data: data),
+        //                   ],
+        //                 ),
+        //               ),
+        //             ],
+        //           ),
+        //         );
+        //       }
+        //     },
+        //   ),
+        // ),
+        ),
+    debugShowCheckedModeBanner: false,
+  );
+}
+
+// class Event {
+//   final String Mainevent, player, time, homeOrAway;
+//   Event(this.Mainevent, this.player, this.time, this.homeOrAway);
+// }
+
+Widget awayTeam(BuildContext context, AsyncSnapshot snapshot, int i) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: [
+      if (snapshot.data[i].info != "")
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          // mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 2),
+              child: Row(
+                children: [
+                  Text(
+                    snapshot.data[i].player.toString(),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  SizedBox(width: 5),
+                  Icon(
+                    FontAwesome.arrow_circle_right,
+                    size: 20,
+                    color: Colors.green[600],
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 2),
+              child: Row(
+                children: [
+                  Text(
+                    snapshot.data[i].info.toString().toLowerCase(),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  SizedBox(width: 5),
+                  Icon(
+                    FontAwesome.arrow_circle_left,
+                    size: 20,
+                    color: Colors.red[600],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        )
+      else
+        Text(
+          snapshot.data[i].player.toString().toLowerCase() + "   ",
+          textAlign: TextAlign.end,
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      if (snapshot.data[i].event == "GOAL")
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 5),
+          child: Icon(
+            FontAwesome.futbol_o,
+            size: 15,
+            color: Colors.white,
+          ),
+        )
+      else if (snapshot.data[i].event == "YELLOW_CARD")
+        RotatedBox(
+            quarterTurns: 1,
+            child: Icon(
+              MaterialCommunityIcons.rectangle,
+              color: Colors.yellow,
+            ))
+      else if (snapshot.data[i].event == "RED_CARD")
+        RotatedBox(
+            quarterTurns: 1,
+            child: Icon(
+              MaterialCommunityIcons.rectangle,
+              color: Colors.red,
+            ))
+      else
+        SizedBox(
+          width: 4,
+        ),
+      Text(
+        " ' " + snapshot.data[i].time + " ' ",
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    ],
+  );
+}
+
+Widget homeTeam(BuildContext context, AsyncSnapshot snapshot, int i) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: [
+      Text(
+        " ' " + snapshot.data[i].time + " ' ",
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+      if (snapshot.data[i].event == "GOAL")
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 5),
+          child: Icon(
+            FontAwesome.futbol_o,
+            size: 15,
+            color: Colors.white,
+          ),
+        )
+      else if (snapshot.data[i].event == "YELLOW_CARD")
+        RotatedBox(
+            quarterTurns: 1,
+            child: Icon(
+              MaterialCommunityIcons.rectangle,
+              color: Colors.yellow,
+            ))
+      else if (snapshot.data[i].event == "RED_CARD")
+        RotatedBox(
+            quarterTurns: 1,
+            child: Icon(
+              MaterialCommunityIcons.rectangle,
+              color: Colors.red,
+            ))
+      else
+        SizedBox(
+            // width: 4,
+            ),
+      if (snapshot.data[i].info != "") //SUBSTITION
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          // mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 2),
+              child: Row(
+                children: [
+                  Icon(
+                    FontAwesome.arrow_circle_right,
+                    size: 20,
+                    color: Colors.green[600],
+                  ),
+                  SizedBox(width: 5),
+                  Text(
+                    snapshot.data[i].player.toString().toLowerCase(),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 2),
+              child: Row(
+                children: [
+                  Icon(
+                    FontAwesome.arrow_circle_left,
+                    size: 20,
+                    color: Colors.red[600],
+                  ),
+                  SizedBox(width: 5),
+                  Text(
+                    snapshot.data[i].info.toString().toLowerCase(),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        )
+      else
+        Text(
+          snapshot.data[i].player.toString().toLowerCase() + "   ",
+          textAlign: TextAlign.end,
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+    ],
+  );
+}
+
+Widget Shooting(BuildContext context, String shotsOnTarget) {
+  return Padding(
+    padding: EdgeInsets.all(5),
+    child: Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Text(
+          shotsOnTarget.toString().substring(0, 1),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          "Shooting",
+          style: TextStyle(
+            fontSize: 19,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          shotsOnTarget.toString().substring(2),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget Attacks(BuildContext context, String attacks) {
+  String home = "0", away;
+  for (var i = 0; i < attacks.length; i++) {
+    if (attacks[i] != ":") {
+      home += attacks[i];
+    } else {
+      break;
+    }
+  }
+  // print(attacks.substring(home.length));
+  return Padding(
+    padding: const EdgeInsets.all(5),
+    child: Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Text(
+          home.toString().substring(1),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          "Attacks",
+          style: TextStyle(
+            fontSize: 19,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          attacks.toString().substring(home.length),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget Possesion(BuildContext context, String possesion) {
+  return Padding(
+    padding: const EdgeInsets.all(5),
+    child: Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Text(
+          possesion.toString().substring(0, 2),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          "possesion",
+          style: TextStyle(
+            fontSize: 19,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          possesion.toString().substring(3),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget yellowCard(BuildContext context, String yellowCards) {
+  return Padding(
+    padding: const EdgeInsets.all(5),
+    child: Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Text(
+          yellowCards.toString().substring(0, 1),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+        Row(
+          children: [
+            RotatedBox(
+              quarterTurns: 1,
+              child: Icon(
+                MaterialCommunityIcons.rectangle,
+                color: Colors.yellow,
+                size: 30,
+              ),
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Text(
+              "Card",
+              style: TextStyle(
+                fontSize: 19,
+                color: Colors.white,
+              ),
+            )
+          ],
+        ),
+        Text(
+          yellowCards.toString().substring(2),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget redCard(BuildContext context, String redCards) {
+  return Padding(
+    padding: const EdgeInsets.all(5),
+    child: Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Text(
+          redCards.toString().substring(0, 1),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+        Row(
+          children: [
+            RotatedBox(
+              quarterTurns: 1,
+              child: Icon(
+                MaterialCommunityIcons.rectangle,
+                color: Colors.red,
+                size: 30,
+              ),
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Text(
+              "Card",
+              style: TextStyle(
+                fontSize: 19,
+                color: Colors.white,
+              ),
+            )
+          ],
+        ),
+        Text(
+          redCards.toString().substring(2),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget Corner(BuildContext context, String corners) {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(7, 5, 5, 5),
+    child: Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Text(
+          corners.toString().substring(0, 1),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          "corners",
+          style: TextStyle(
+            fontSize: 19,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          corners.toString().substring(2),
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget info(BuildContext context, {Map data}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 40),
+    child: Container(
+      width: MediaQuery.of(context).size.width * .90,
+      decoration: BoxDecoration(
+        color: Color(0xFF2b2b3d),
+        borderRadius: BorderRadius.all(
+          Radius.circular(20),
+        ),
+      ),
+      child: Container(
+        padding: EdgeInsets.all(14),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //date
+            Padding(
+                padding: const EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    Icon(
+                      FontAwesome.clock_o,
+                      size: 17,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 7,
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          data["date"],
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          data["time"],
+                          style: TextStyle(color: Colors.white),
+                        )
+                      ],
+                    ),
+                  ],
+                )),
+            //league
+            Padding(
+                padding: const EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    Icon(
+                      FontAwesome.futbol_o,
+                      size: 15,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      data["league"],
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                )),
+
+            //location
+            Padding(
+                padding: const EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    Icon(
+                      MaterialCommunityIcons.soccer_field,
+                      size: 17,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      data["location"],
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                )),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class User {
+  final String player, time, event, home_away, info;
+  User(this.player, this.time, this.event, this.home_away, this.info);
+}
+

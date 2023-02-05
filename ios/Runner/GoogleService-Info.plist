@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>853190418053-1bcinbkd8d1ig5tghvmbsebvoe1kgrrb.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.853190418053-1bcinbkd8d1ig5tghvmbsebvoe1kgrrb</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>853190418053-t6qesbgsq6e53b5u7lb8hvdi3mbe7fi7.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAi2JsxJFIfyGB8pXRqsLIwcxjZELpO2TM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>853190418053</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>football</string>
+	<key>PROJECT_ID</key>
+	<string>football-38460</string>
+	<key>STORAGE_BUCKET</key>
+	<string>football-38460.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:853190418053:ios:963a7397bd7a6a94dcd3ec</string>
+	<key>DATABASE_URL</key>
+	<string>https://football-38460-default-rtdb.europe-west1.firebasedatabase.app</string>
+</dict>
+</plist>
